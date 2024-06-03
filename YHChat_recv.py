@@ -6,8 +6,8 @@ app = FastAPI()
 
 
 @app.post("/")
-def _(data=Body(...)):
-    event_handle(data)
+async def _(data=Body(...)):
+    await event_handle(data)
 
 
 def on_message(func):
