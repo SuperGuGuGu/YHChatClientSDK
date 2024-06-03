@@ -39,6 +39,14 @@ def message_convert(data):
     return data
 
 
+class UserInfo:
+    def __init__(self, user_data):
+        self.id_ = user_data["senderId"]
+        self.type = user_data["senderType"]
+        self.level = user_data["senderUserLevel"]
+        self.nickname = user_data["senderNickname"]
+
+
 class Event:
     def __init__(self, data):
         self.event_id = data["header"]["eventId"]
@@ -52,12 +60,14 @@ class Event:
                 self.message_id = data["event"]["message"]["msgId"]
                 self.message_parent_id = data["event"]["message"]["parentId"]
                 self.message = message_convert(data)
+                self.sender_info = UserInfo(data["event"]["sender"])
             case "message.receive.instruction":
                 self.chat_type = data["event"]["message"]["chatType"]
                 self.chat_id = data["event"]["message"]["chatId"]
                 self.message_id = data["event"]["message"]["msgId"]
                 self.message_parent_id = data["event"]["message"]["parentId"]
                 self.message = message_convert(data)
+                self.sender_info = UserInfo(data["event"]["sender"])
 
             case "bot.followed":
                 pass
