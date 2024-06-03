@@ -11,6 +11,6 @@ YHChat_run.run(token="1234567890abcdef", port=18888)
 YHChat_send.send_message(recv_type="user", recv_id="4503515", message=MessageSegment.text("Hello, World!"))
 
 
-@YHChat_recv.on_message
+@YHChat_recv.on_event
 def _(message: Event):
     pprint(message.message)

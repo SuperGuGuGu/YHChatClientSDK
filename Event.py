@@ -4,7 +4,14 @@ from typing import *
 from Message import MessageSegment
 import inspect
 
+on_event_func_list: List[Callable] = []
 on_message_func_list: List[Callable] = []
+on_command_func_list: List[Callable] = []
+group_join_func_list: List[Callable] = []
+group_leave_func_list: List[Callable] = []
+bot_followed_func_list: List[Callable] = []
+bot_unfollowed_func_list: List[Callable] = []
+button_report_inline_func_list: List[Callable] = []
 
 
 def message_convert(data):
@@ -69,13 +76,79 @@ class Event:
                 pass
 
 
-def event_handle(data: dict):
-    for func in on_message_func_list:
-        signature = inspect.signature(func)
+async def event_handle(data: dict):
+    event = Event(data)
 
+    match event.event_type:
+        case "message.receive.normal":
+            for func in on_message_func_list:
+                signature = inspect.signature(func)
+                if len(signature.parameters) == 0:
+                    func()
+                elif len(signature.parameters) == 1:
+                    func(Event(data))
+                else:
+                    print(f"on_message 处理时 {func.__name__} 参数数量错误")
+        case "message.receive.instruction":
+            for func in on_command_func_list:
+                signature = inspect.signature(func)
+                if len(signature.parameters) == 0:
+                    func()
+                elif len(signature.parameters) == 1:
+                    func(Event(data))
+                else:
+                    print(f"on_message 处理时 {func.__name__} 参数数量错误")
+        case "bot.followed":
+            for func in bot_followed_func_list:
+                signature = inspect.signature(func)
+                if len(signature.parameters) == 0:
+                    func()
+                elif len(signature.parameters) == 1:
+                    func(Event(data))
+                else:
+                    print(f"on_message 处理时 {func.__name__} 参数数量错误")
+        case "bot.unfollowed":
+            for func in bot_unfollowed_func_list:
+                signature = inspect.signature(func)
+                if len(signature.parameters) == 0:
+                    func()
+                elif len(signature.parameters) == 1:
+                    func(Event(data))
+                else:
+                    print(f"on_message 处理时 {func.__name__} 参数数量错误")
+        case "group.join":
+            for func in group_join_func_list:
+                signature = inspect.signature(func)
+                if len(signature.parameters) == 0:
+                    func()
+                elif len(signature.parameters) == 1:
+                    func(Event(data))
+                else:
+                    print(f"on_message 处理时 {func.__name__} 参数数量错误")
+        case "group.leave":
+            for func in group_leave_func_list:
+                signature = inspect.signature(func)
+                if len(signature.parameters) == 0:
+                    func()
+                elif len(signature.parameters) == 1:
+                    func(Event(data))
+                else:
+                    print(f"on_message 处理时 {func.__name__} 参数数量错误")
+        case "button.report.inline":
+            for func in button_report_inline_func_list:
+                signature = inspect.signature(func)
+                if len(signature.parameters) == 0:
+                    func()
+                elif len(signature.parameters) == 1:
+                    func(Event(data))
+                else:
+                    print(f"on_message 处理时 {func.__name__} 参数数量错误")
+
+    for func in on_event_func_list:
+        signature = inspect.signature(func)
         if len(signature.parameters) == 0:
             func()
         elif len(signature.parameters) == 1:
             func(Event(data))
         else:
-            print(f"on_message 处理时 {func.__name__} 参数数量错误")
+            print(f"on 处理时 {func.__name__} 参数数量错误")
