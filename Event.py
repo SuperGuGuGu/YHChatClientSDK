@@ -21,7 +21,10 @@ def message_convert(data):
         case "text":
             data = {
                 "type": "text",
-                "data": {"text": content["text"]}
+                "data": {
+                    "text": content["text"],
+                    "at": content["at"] if "at" in list(content) else []
+                }
             }
         case "markdown":
             data = {
